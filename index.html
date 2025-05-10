@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobEase Bot - Auto Apply</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .welcome-slide {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff7eb3, #ff758c, #ff4b5c);
+            color: white;
+            font-size: 2.5em;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 1.5s ease-in-out;
+        }
+        .welcome-slide h1 {
+            animation: fadeIn 2s ease-in-out;
+        }
+        .welcome-slide p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .get-started-btn {
+            margin-top: 20px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            color: white;
+            background: #ff4b5c;
+            border: none;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: 0.3s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            animation: bounceIn 2s ease-in-out;
+        }
+        .get-started-btn:hover {
+            background: #ff1e3c;
+            transform: scale(1.1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        
+        .container {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            margin: 50px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 16px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: black;
+            outline: none;
+            transition: 0.3s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        select option {
+            color: black;
+        }
+
+        input::placeholder {
+            color: black;
+        }
+
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Job Description */
+        #job-description {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+        }
+
+        /* Password Input Wrapper */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+
+        .password-container i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: black;
+            font-size: 18px;
+        }
+
+        /* Location Field */
+        #location-div, #custom-job-role-div {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        button {
+            background: #ff9800;
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #ffb74d;
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-slide">
+        <h1>Welcome to JobEase Bot</h1>
+        <p>Your AI-powered job application assistant</p>
+        <button class="get-started-btn">Get Started</button>
+    </div>
+
+<div class="container" id="form-section">
+    <h1>JobEase Bot - Auto Apply</h1>
+    <form id="job-form" enctype="multipart/form-data">
+        <label for="username">LinkedIn Username / Email / Phone Number:</label>
+        <input type="text" id="username" name="username" required placeholder="Enter LinkedIn username, email, or phone number">
+        <label for="password">LinkedIn Password:</label>
+        <div class="password-container">
+            <input type="password" id="password" name="password" required placeholder="Enter your LinkedIn password">
+            <i class="fas fa-eye" id="togglePassword"></i>
+        </div>
+        <label for="job_role">Job Role:</label>
+        <select id="job_role" name="job_role" required onchange="toggleCustomJobRoleInput()">
+            <option value="Front-End Developer">Front-End Developer</option>
+            <option value="Back-End Developer">Back-End Developer</option>
+            <option value="AWS Engineer">AWS Engineer</option>
+            <option value="Cloud Engineer">Cloud Engineer</option>
+            <option value="DevOps Engineer">DevOps Engineer</option>
+            <option value="ML/AI Engineer">ML/AI Engineer</option>
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="Data Scientist">Data Scientist</option>
+            <option value="Software Engineer">Software Engineer</option>
+            <option value="Mobile App Developer">Mobile App Developer</option>
+            <option value="Game Developer">Game Developer</option>
+            <option value="Big Data Engineer">Big Data Engineer</option>
+            <option value="Cyber Security Analyst">Cyber Security Analyst</option>
+            <option value="Ethical Hacker">Ethical Hacker</option>
+            <option value="System Administrator">System Administrator</option>
+            <option value="Manual Tester">Manual Tester</option>
+            <option value="Automation Tester">Automation Tester</option>
+            <option value="IT Project Manager">IT Project Manager</option>
+            <option value="others">Others</option>
+        </select>
+        <div id="custom-job-role-div">
+            <label for="custom_job_role">Custom Job Role:</label>
+            <input type="text" id="custom_job_role" name="custom_job_role" placeholder="Enter your job role">
+        </div>
+        <div id="job-description"></div>
+        <label for="experience">Experience (in years):</label>
+        <input type="number" id="experience" name="experience" min="0" placeholder="Enter years of experience" required>
+        <label for="location_type">Location Type:</label>
+        <select id="location_type" name="location_type" required onchange="toggleLocationInput()">
+            <option value="On-Site">On-Site</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+        </select>
+        <div id="location-div">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="Enter location">
+        </div>
+        <label for="resume">Upload Resume (PDF only):</label>
+        <input type="file" id="resume" name="resume" accept=".pdf" required>
+        <button type="submit">Start Job Application</button>
+    </form>
+    <div id="loading-message" style="display:none;">Processing... Please wait.</div>
+    <div id="results"></div>
+</div>
+</body>
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+            function goToForm() {
+                document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            document.querySelector(".get-started-btn").addEventListener("click", goToForm);
+            
+            const passwordToggle = document.getElementById("togglePassword");
+            const passwordField = document.getElementById("password");
+            const locationType = document.getElementById("location_type");
+            const locationDiv = document.getElementById("location-div");
+            const jobForm = document.getElementById("job-form");
+            const resultsDiv = document.getElementById("results");
+            const loadingMessage = document.getElementById("loading-message");
+            const resumeInput = document.getElementById("resume");
+            const jobRoleSelect = document.getElementById("job_role");
+            const jobDescriptionDiv = document.getElementById("job-description");
+            const customJobRoleDiv = document.getElementById("custom-job-role-div");
+            const customJobRoleInput = document.getElementById("custom_job_role");
+
+        // Define job descriptions for each role
+        const jobDescriptions = {
+            "Front-End Developer": "Responsible for designing and implementing user interfaces using HTML, CSS, and JavaScript.",
+            "Back-End Developer": "Develops and maintains server-side logic, databases, and APIs using languages like Python, Java, or Node.js.",
+            "AWS Engineer": "Manages AWS cloud infrastructure, ensuring scalability, security, and automation of deployments.",
+            "Cloud Engineer": "Designs, implements, and manages cloud-based systems, ensuring optimal performance and cost-efficiency.",
+            "DevOps Engineer": "Automates CI/CD pipelines, infrastructure provisioning, and system monitoring using tools like Jenkins, Docker, and Kubernetes.",
+            "ML/AI Engineer": "Builds and deploys machine learning models, processes large datasets, and develops AI solutions.",
+            "Data Analyst": "Extracts insights from data using SQL, Python, R, and visualization tools like Power BI or Tableau.",
+            "Data Scientist": "Applies statistical and machine learning techniques to analyze data and build predictive models.",
+            "Software Engineer": "Designs, develops, tests, and maintains software applications across various domains.",
+            "Mobile App Developer": "Creates mobile applications for iOS and Android using frameworks like Flutter, React Native, or Swift.",
+            "Game Developer": "Develops interactive games using engines like Unity or Unreal Engine, focusing on gameplay and graphics.",
+            "Big Data Engineer": "Handles large-scale data processing, storage, and analytics using tools like Hadoop, Spark, and Kafka.",
+            "Cyber Security Analyst": "Protects systems and networks from security threats by monitoring and analyzing vulnerabilities.",
+            "Ethical Hacker": "Identifies and exploits vulnerabilities in IT systems to improve security, ensuring compliance with standards.",
+            "System Administrator": "Manages and maintains IT infrastructure, including servers, networks, and system updates.",
+            "Manual Tester": "Executes test cases manually to identify bugs and ensure software quality before release.",
+            "Automation Tester": "Develops automated test scripts using tools like Selenium or Appium to improve testing efficiency.",
+            "IT Project Manager": "Leads IT projects, coordinates teams, manages budgets, and ensures timely delivery of solutions.",
+            "others": "Custom job role entered by the user."
+        };
+
+        // Function to update job description based on selected role
+        function updateJobDescription() {
+            const selectedRole = jobRoleSelect.value;
+            if (selectedRole === "others") {
+                jobDescriptionDiv.textContent = "Custom job role entered by the user.";
+                jobDescriptionDiv.style.display = "block";
+            } else if (jobDescriptions[selectedRole]) {
+                jobDescriptionDiv.textContent = jobDescriptions[selectedRole];
+                jobDescriptionDiv.style.display = "block";
+            } else {
+                jobDescriptionDiv.style.display = "none";
+            }
+        }
+
+        // Function to show/hide custom job role input
+        function toggleCustomJobRoleInput() {
+            customJobRoleDiv.style.display = jobRoleSelect.value === "others" ? "block" : "none";
+            if (jobRoleSelect.value !== "others") {
+                customJobRoleInput.value = ""; // Clear the custom job role input when "Others" is not selected
+            }
+        }
+
+        // Initialize job description and custom job role input on page load and update on change
+        jobRoleSelect.addEventListener("change", function () {
+            updateJobDescription();
+            toggleCustomJobRoleInput();
+        });
+        updateJobDescription();
+        toggleCustomJobRoleInput();
+
+        // Toggle password visibility
+        passwordToggle.addEventListener("click", function () {
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+            this.classList.toggle("fa-eye-slash");
+        });
+
+        // Show location input only when "On-Site" is selected
+        function toggleLocationInput() {
+            locationDiv.style.display = locationType.value === "On-Site" ? "block" : "none";
+        }
+        locationType.addEventListener("change", toggleLocationInput);
+        toggleLocationInput();
+
+        // Resume file size validation
+        resumeInput.addEventListener("change", function () {
+            if (this.files[0] && this.files[0].size > 2 * 1024 * 1024) {
+                alert("File size should be less than 2MB.");
+                this.value = "";
+            }
+        });
+
+        // Handle form submission
+        jobForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            resultsDiv.innerHTML = "";
+            loadingMessage.style.display = "block";
+
+            let formData = new FormData(jobForm);
+
+            // If "Others" is selected, use the custom job role value
+            if (jobRoleSelect.value === "others" && customJobRoleInput.value.trim() !== "") {
+                formData.set("job_role", customJobRoleInput.value.trim());
+            }
+
+            try {
+                let response = await fetch("/start-bot", {
+                    method: "POST",
+                    body: formData
+                });
+
+                let result = await response.json();
+                loadingMessage.style.display = "none";
+
+                if (response.ok) {
+                    saveApplicationToDatabase(formData);
+
+                    // Autofill Form with Extracted Resume Details
+                    if (result.resume_details) {
+                        document.getElementById("username").value = result.resume_details.email || "";
+                        document.getElementById("password").value = "";
+                        document.getElementById("experience").value = result.resume_details.experience || "";
+
+                        if (result.jobs.length > 0 && result.jobs[0].title) {
+                            const jobTitle = result.jobs[0].title;
+                            const jobRoleOptions = Array.from(jobRoleSelect.options).map(option => option.value);
+                            if (jobRoleOptions.includes(jobTitle)) {
+                                document.getElementById("job_role").value = jobTitle;
+                            } else {
+                                document.getElementById("job_role").value = "others";
+                                customJobRoleInput.value = jobTitle;
+                                toggleCustomJobRoleInput();
+                            }
+                            updateJobDescription(); // Update job description after autofill
+                        }
+
+                        setTimeout(() => {
+                            document.getElementById("username").dispatchEvent(new Event("input"));
+                            document.getElementById("experience").dispatchEvent(new Event("input"));
+                            document.getElementById("job_role").dispatchEvent(new Event("change"));
+                        }, 500);
+
+                        resultsDiv.innerHTML = `
+                            <h3>Extracted Resume Details:</h3>
+                            <p><strong>Full Name:</strong> ${result.resume_details.name || "Not found"}</p>
+                            <p><strong>Email:</strong> ${result.resume_details.email || "Not found"}</p>
+                            <p><strong>Phone:</strong> ${result.resume_details.phone || "Not found"}</p>
+                            <p><strong>LinkedIn:</strong> ${result.resume_details.linkedin || "Not found"}</p>
+                        `;
+                    }
+
+                    // Show Jobs
+                    if (result.jobs.length > 0) {
+                        let jobList = "<h3>Jobs Found:</h3><ul>";
+                        result.jobs.forEach(job => {
+                            jobList += `<li><strong>${job.title}</strong> at ${job.company} (${job.location})</li>`;
+                        });
+                        jobList += "</ul>";
+                        resultsDiv.innerHTML += jobList;
+                    } else {
+                        resultsDiv.innerHTML += "<p>No jobs found.</p>";
+                    }
+
+                    fetchPreviousApplications();
+                } else {
+                    resultsDiv.innerHTML = `<p style="color: red;">❌ Error: ${result.error}</p>`;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                resultsDiv.innerHTML = `<p style="color: red;">❌ Failed to submit the form.</p>`;
+                loadingMessage.style.display = "none";
+            }
+        });
+
+        // Function to save the application data into the database
+        async function saveApplicationToDatabase(formData) {
+            try {
+                let response = await fetch("/save-application", {
+                    method: "POST",
+                    body: formData
+                });
+
+                let result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to save application.");
+                }
+                console.log("Application saved successfully:", result);
+            } catch (error) {
+                console.error("Database save error:", error);
+            }
+        }
+
+        // Function to fetch and display previous applications
+        async function fetchPreviousApplications() {
+            try {
+                let response = await fetch("/get-applications", { method: "GET" });
+                let result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to retrieve applications.");
+                }
+
+                if (result.applications.length > 0) {
+                    let applicationList = "<h3>Previous Applications:</h3><ul>";
+                    result.applications.forEach(app => {
+                        applicationList += `<li><strong>${app.job_role}</strong> - ${app.location_type} (${app.experience} years)</li>`;
+                    });
+                    applicationList += "</ul>";
+                    resultsDiv.innerHTML += applicationList;
+                } else {
+                    resultsDiv.innerHTML += "<p>No previous applications found.</p>";
+                }
+            } catch (error) {
+                console.error("Database fetch error:", error);
+            }
+        }
+
+        // Fetch previous applications on page load
+        fetchPreviousApplications();
+    });
+    </script>
+</body>
+</html>
